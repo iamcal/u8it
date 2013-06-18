@@ -426,7 +426,7 @@ int main( int argc, const char * argv[])
 
    if(argc == 3)
    {
-       printf("Unack Mode Enabled\n\n");
+       printf("Unpack Mode Enabled\n\n");
        unpacku8(argv[2], argv[1]);
    }
 
