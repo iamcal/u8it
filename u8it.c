@@ -309,19 +309,23 @@ void unpacku8 (const char * out, const char * in)
      u32 cur_pos = 0, numnodes = 0, i = 0, data_offset = 0, header_size = 0, string_size = 0, data_size = 0, break_file[64], cur_dataoffset = 0, cur_size = 0;
      u16 cur_type = 0, cur_nameoffset = 0, cur_index = 0, ret;
 
-     printf("Unpacking U8 Archive...\nIf you don't get any more messages, the unpacking failed.\n\ns");
+     printf("Unpacking U8 Archive...\nIf you don't get any more messages, the unpacking failed.\n\n");
 
      infile = fopen (in, "rb");
-     if ( infile == NULL )
+     if ( infile == NULL ){
+        printf("ERROR: Failed to open file for reading\n");
         return;
+     }
 
      mkdir(out, 0777); //remove second arguement on windows (except cygwin)
      ret = chdir(out);
 
      printf("Reading U8 Header...\n");
      fread( &header, 1, sizeof(u8header), infile);
-     if ( le32(header.tag) != 0x55AA382D) //is it a u8 file?
+     if ( le32(header.tag) != 0x55AA382D){ //is it a u8 file?
+        printf("ERROR: Failed to read header magic (got %x)\n", le32(header.tag));
         return;
+     }
 
      data_offset = le32( header.data_offset );
      header_size = le32( header.header_size );
@@ -335,8 +339,10 @@ void unpacku8 (const char * out, const char * in)
 
     debug("Allocating memory for string table.\n");
      stringtable = malloc(string_size);
-     if ( stringtable == NULL )
+     if ( stringtable == NULL ){
+        printf("ERROR: Failed to allocate memory\n");
         return;
+    }
 
     debug("Moving file pointer along and reading string table.\n");
      cur_pos = ftell(infile);
